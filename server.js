@@ -1,6 +1,9 @@
+import 'express-async-errors';
 import express from "express";
 import morgan, { compile } from "morgan";
 import * as dotenv from "dotenv";
+import mongoose from 'mongoose';
+
 dotenv.config();
 
 const app = express();
@@ -28,6 +31,13 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 5100;
-app.listen(port, () => {
-  console.log(`Server is running on ${port}`);
-});
+try{
+  await mongoose.connect(process.env.MONGO_URL);
+  app.listen(port, () => {
+    console.log(`Server is running on ${port}`);
+  });
+}
+catch(error){
+  console.log(error);
+  process.exit(1);
+}
