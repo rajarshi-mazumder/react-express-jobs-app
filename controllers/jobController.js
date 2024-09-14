@@ -1,5 +1,7 @@
 import { nanoid } from "nanoid";
 import Job from "../models/JobModel.js";
+import { StatusCodes } from "http-status-codes";
+import { InternalServerError } from "../errors/customErrors.js";
 
 let jobs = [
   { id: nanoid(), company: "PRX", position: "Duelist", game: "Valorant" },
@@ -7,57 +9,54 @@ let jobs = [
 ];
 
 export const getAllJobs = async (req, res) => {
-  const jobs= await Job.find();
-  res.status(200).json({ jobs });
+  const jobs = await Job.find();
+  res.status(StatusCodes.OK).json({ jobs });
 };
 
 export const createJob = async (req, res) => {
-    const { company, position, game } = req.body;
-    const job= await Job.create(req.body);
-    return res.status(201).json({ job });
-  
+  const { company, position, game } = req.body;
+  const job = await Job.create(req.body);
+  return res.status(StatusCodes.CREATED).json({ job });
 };
 
 export const getJob = async (req, res) => {
-  const { id } = req.params;
-  console.log(id);
-  const job = jobs.find((job) => job.id === id);
+  try {
+    const { id } = req.params;
 
-  if (!job) {
-    return res.status(404).json({ msg: `No job with id ${id}` });
+    const job = await Job.findById(id);
+
+    return res.status(StatusCodes.OK).json({ job });
+  } catch (error) {
+    throw new InternalServerError(`En error occured ${error}`);
   }
-  return res.status(200).json({ job });
 };
 
 export const updateJob = async (req, res) => {
-  const { company, position, game } = req.body;
-  if (!company || !game) {
-    return res.status(400).json({ msg: "Please provide comapny and game" });
+  try {
+    const { id } = req.params;
+
+    const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+      new: true,
+      upsert: true,
+    });
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: `Job modified ${updatedJob.toObject()}` });
+  } catch (error) {
+    throw InternalServerError(error);
   }
-
-  const { id } = req.params;
-  console.log(id);
-  const job = jobs.find((job) => job.id === id);
-
-  if (!job) {
-    return res.status(404).json({ msg: `No job with id ${id}` });
-  }
-  job.company = company;
-  job.game = game;
-  job.position = position;
-
-  return res.status(200).json({ msg: `Job modified ${{ job }}` });
 };
 
 export const deleteJob = async (req, res) => {
-  const { id } = req.params;
-  const job = jobs.find((job) => job.id === id);
-  if (!job) {
-    return res.status(400).json({ msg: `Job with ${id} not found` });
+  try {
+    const { id } = req.params;
+    const removedJob = await Job.findByIdAndDelete(id);
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: "job deleted", job: removedJob.toObject() });
+  } catch (error) {
+    throw InternalServerError(error);
   }
-
-  const newJobs = jobs.filter((job) => job.id !== id);
-  jobs = newJobs;
-
-  return res.status(201).json({ job });
 };

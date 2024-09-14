@@ -1,24 +1,27 @@
 import mongoose from "mongoose";
+import { JOB_STATUS, JOB_TYPE } from "../utils/constants.js";
 
-
-const JobSchema = new mongoose.Schema({
+const JobSchema = new mongoose.Schema(
+  {
     company: String,
     postiion: String,
-    game:String,
-    jobStatus:{
-        type:String,
-        enum: ['competitive-player', 'streamer'],
-        default:'competitive-player'
+    game: String,
+    jobStatus: {
+      type: String,
+      enum: Object.values(JOB_STATUS),
+      default: JOB_STATUS.PENDING,
     },
-    jobType:{
-        type:String,
-        enum:['full-time','tryout'],
-        default: 'full-time'
+    jobType: {
+      type: String,
+      enum: Object.values(JOB_TYPE),
+      default: JOB_TYPE.COMPETITIVE,
     },
-    jobLocation:{
-        type: String,
-        default: 'Riot Games HQ'
-    }
-}, {timestamps: true});
+    jobLocation: {
+      type: String,
+      default: "Riot Games HQ",
+    },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model('Job', JobSchema);
+export default mongoose.model("Job", JobSchema);
