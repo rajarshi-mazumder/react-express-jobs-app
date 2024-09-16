@@ -20,6 +20,10 @@ const JobSchema = new mongoose.Schema(
       type: String,
       default: "Riot Games HQ",
     },
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
