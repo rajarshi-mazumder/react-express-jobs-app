@@ -3,6 +3,7 @@ import express from "express";
 import morgan, { compile } from "morgan";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ const app = express();
 // routers
 import jobRouter from "./routes/jobRouter.js";
 import authRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 // middlewares
 import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
@@ -19,6 +21,7 @@ import { authenticateUser } from "./middleware/authMiddleware.js";
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+app.use(cookieParser());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -26,6 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/jobs/", authenticateUser, jobRouter);
+app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth/", authRouter);
 
 app.use("*", (req, res) => {

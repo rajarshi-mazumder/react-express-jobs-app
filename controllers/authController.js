@@ -40,3 +40,10 @@ export const getAllUsers = async (req, res) => {
   const users = await User.find({});
   return res.status(StatusCodes.OK).json({ users });
 };
+
+export const logout = async (req, res) => {
+  req.cookie("token", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+};
