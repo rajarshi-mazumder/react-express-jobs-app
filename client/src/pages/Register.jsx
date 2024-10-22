@@ -1,14 +1,20 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
 import Logo from '../components/Logo';
 import FormRow from '../components/FormRow';
+import {Form, redirect, useNavigation, Link} from 'react-router-dom'; 
 
+export const action = async ({request})=>{
+  const formData=  await request.formData();
+  const data= Object.fromEntries(formData);
+  console.log(data);
+  return null;
+}
 
 const Register = () => {
   return (
     <Wrapper>
-      <form className='form'>
+      <form method='post'  className='form' action='/login'>
         <Logo />
         <h4>Register</h4>
         <FormRow type='text' name='name' defaultValue='john'/>

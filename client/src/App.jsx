@@ -11,6 +11,8 @@ export const checkDefaultTheme= ()=>{
 
 checkDefaultTheme();
 
+import { action } from "./pages/Register";
+
 const router= createBrowserRouter ([
   {
     path: '/',
@@ -23,11 +25,13 @@ const router= createBrowserRouter ([
       },
       {
         path: 'register',
-        element: <Register />
+        element: <Register />,
+        action: {action},
       },
       {
         path: 'login',
-        element: <Login />
+        element: <Login />,
+        action: {action},
       },
       {
         path: 'dashboard',
