@@ -1,5 +1,5 @@
 import React from 'react'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { Routes, Route, Link, NavLink, createBrowserRouter, RouterProvider, createRoutesFromElements} from 'react-router-dom';
 import {HomeLayout, Landing, Register, Login, DashboardLayout, Error, AddJob, Stats, AllJobs, Profile, Admin} from './pages';
 
 
@@ -35,7 +35,7 @@ const router= createBrowserRouter ([
       },
       {
         path: 'dashboard',
-        element: <DashboardLayout />,
+        element: <DashboardLayout />, 
         children:[
           {
             index: true,
@@ -65,9 +65,23 @@ const router= createBrowserRouter ([
   
 ]); 
 
+const newRouter= createBrowserRouter(
+  createRoutesFromElements(
+      <Route path='/' element={<HomeLayout />}
+      errorElement={<Error />}
+      >
+          <Route index={true} element={<Landing />} />
+          <Route path='register' element={<Register/ >} action={action}/>
+          <Route path='login' element={<Login/ >} />
+          
+        </Route>
+  )
+);
+
 const App = () => {
   return (
-   <RouterProvider router={router}/>
+  //  <RouterProvider router={router}/> // OG <--
+  <RouterProvider router={newRouter} />
   )
 }
 
